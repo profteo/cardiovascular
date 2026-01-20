@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia do Sistema Cardiovascular</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom Config & Styles -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'classic-paper': '#fdfbf7',
+                        'classic-dark': '#2c241b',
+                        'royal-purple': '#5e3a8c',
+                        'royal-purple-dark': '#4a2c70',
+                        'accent-gold': '#d4af37',
+                    },
+                    fontFamily: {
+                        serif: ['Merriweather', 'serif'],
+                        sans: ['Roboto', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Styles for Specific Interactive Elements */
+        body {
+            background-color: #fdfbf7;
+            color: #2c241b;
+        }
+
+        /* Glassmorphism Header */
+        .glass-header {
+            background: rgba(94, 58, 140, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Perspective for Flashcards */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+        
+        .backface-hidden {
+            backface-visibility: hidden;
+        }
+        
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555; 
+        }
+
+        /* Print Styles for Certificate */
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            /* Hide everything by default in print */
+            nav, main, footer, .no-print, #image-modal, #user-guide-modal {
+                display: none !important;
+            }
+            
+            /* Show and style certificate area specifically */
+            #certificate-area {
+                display: flex !important; /* Forces display overriding 'hidden' */
+                visibility: visible !important;
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100vh; /* Full viewport height */
+                margin: 0;
+                padding: 0;
+                background: white !important;
+                border: 5px solid #5e3a8c;
+                z-index: 9999;
+            }
+            
+            #certificate-area * {
+                visibility: visible !important;
+            }
+        }
+
+        /* Accordion Animation */
+        details > summary {
+            list-style: none;
+        }
+        details > summary::-webkit-details-marker {
+            display: none;
+        }
+        details[open] summary ~ * {
+            animation: sweep .3s ease-in-out;
+        }
+        @keyframes sweep {
+            0%    {opacity: 0; margin-top: -10px}
+            100%  {opacity: 1; margin-top: 0px}
+        }
+    </style>
+</head>
+<body class="font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Header Navigation -->
+    <nav class="glass-header fixed w-full z-50 text-white shadow-lg transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <i class="fa-solid fa-heart-pulse text-2xl mr-3 text-accent-gold"></i>
+                    <span class="font-serif font-bold text-lg tracking-widest uppercase hidden sm:inline">Sistema Cardiovascular</span>
+                    <span class="font-serif font-bold text-lg tracking-widest uppercase sm:hidden">Cardio</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-center space-x-4">
+                        <a href="#intro" class="hover:bg-royal-purple-dark px-3 py-2 rounded-md text-sm font-medium transition">Início</a>
+                        <a href="#guide" class="hover:bg-royal-purple-dark px-3 py-2 rounded-md text-sm font-medium transition">Guia</a>
+                        <a href="#flashcards" class="hover:bg-royal-purple-dark px-3 py-2 rounded-md text-sm font-medium transition">Flashcards</a>
+                        <a href="#glossary" class="hover:bg-royal-purple-dark px-3 py-2 rounded-md text-sm font-medium transition">Glossário</a>
+                        <a href="#quiz" class="bg-accent-gold text-classic-dark hover:bg-yellow-500 px-3 py-2 rounded-md text-sm font-bold transition shadow-md">Quiz</a>
+                        <button onclick="toggleUserGuide()" class="ml-2 text-white hover:text-accent-gold transition" title="Guia do Utilizador">
+                            <i class="fa-solid fa-circle-question text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- Mobile menu button -->
+                <div class="-mr-2 flex md:hidden items-center">
+                    <button onclick="toggleUserGuide()" class="mr-4 text-white hover:text-accent-gold">
+                        <i class="fa-solid fa-circle-question text-xl"></i>
+                    </button>
+                    <button onclick="toggleMobileMenu()" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-200 hover:text-white hover:bg-royal-purple-dark focus:outline-none">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div class="md:hidden hidden bg-royal-purple shadow-xl" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#intro" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-royal-purple-dark">Início</a>
+                <a href="#guide" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-royal-purple-dark">Guia</a>
+                <a href="#flashcards" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-royal-purple-dark">Flashcards</a>
+                <a href="#glossary" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-royal-purple-dark">Glossário</a>
+                <a href="#quiz" class="block px-3 py-2 rounded-md text-base font-medium bg-accent-gold text-classic-dark">Quiz</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow pt-16">
+
+        <!-- Intro Section -->
+        <section id="intro" class="relative bg-classic-dark text-white py-20 px-4">
+            <div class="absolute inset-0 overflow-hidden opacity-20">
+                <!-- Abstract background pattern -->
+                <img src="https://picsum.photos/1920/1080?grayscale&blur=2" alt="Background" class="w-full h-full object-cover">
+            </div>
+            <div class="relative max-w-4xl mx-auto text-center">
+                <h1 class="font-serif text-4xl md:text-6xl font-black mb-6 tracking-wide text-accent-gold">CORAÇÃO</h1>
+                <p class="text-xl md:text-2xl font-light mb-8 italic">"Uma Viagem ao Centro da Vida"</p>
+                <p class="max-w-2xl mx-auto text-gray-300 mb-10 leading-relaxed">
+                    Bem-vindo ao Guia Interativo do Sistema Cardiovascular. Explore a anatomia, compreenda o ciclo cardíaco e teste os seus conhecimentos através de recursos visuais e jogos.
+                </p>
+                <a href="#guide" class="inline-block bg-royal-purple hover:bg-royal-purple-dark text-white font-bold py-3 px-8 rounded-full shadow-lg transition transform hover:-translate-y-1">
+                    Começar Viagem <i class="fa-solid fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+        </section>
+
+        <!-- Section I: Guia de Estudo -->
+        <section id="guide" class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="font-serif text-3xl font-bold text-royal-purple border-b-4 border-accent-gold inline-block pb-2 px-4">GUIA DE ESTUDO</h2>
+            </div>
+
+            <!-- Video Resource -->
+            <div class="bg-white p-4 rounded-xl shadow-lg mb-12 border border-gray-200">
+                <h3 class="font-serif text-xl font-bold mb-4 text-gray-700 flex items-center"><i class="fa-solid fa-film text-royal-purple mr-2"></i> Introdução Multimédia</h3>
+                <div class="aspect-w-16 aspect-h-9 bg-black rounded-lg overflow-hidden relative">
+                    <video controls class="w-full h-auto max-h-[500px] mx-auto rounded-lg">
+                        <source src="./video.mp4" type="video/mp4">
+                        <div class="absolute inset-0 flex items-center justify-center text-white">
+                            <p>Seu navegador não suporta vídeo. Referência: ./video.mp4</p>
+                        </div>
+                    </video>
+                </div>
+            </div>
+
+            <!-- Accordion Summaries -->
+            <div class="grid md:grid-cols-2 gap-8 mb-16" id="accordion-container">
+                <!-- Javascript will populate this based on PDF structure -->
+            </div>
+
+            <!-- Slideshow -->
+            <div class="bg-classic-dark text-white rounded-xl shadow-2xl overflow-hidden relative">
+                <div class="p-6 bg-royal-purple-dark flex justify-between items-center">
+                    <h3 class="font-serif text-xl font-bold"><i class="fa-solid fa-images mr-2"></i> Galeria Anatómica</h3>
+                    <span id="slide-counter" class="bg-black/30 px-3 py-1 rounded-full text-sm">1 / 15</span>
+                </div>
+                
+                <div class="relative h-[400px] md:h-[500px] bg-black flex items-center justify-center group">
+                    <img id="current-slide" src="./slide1.jpg" onerror="this.src='https://picsum.photos/800/600?random=1'" alt="Slide Educativo" class="max-h-full max-w-full object-contain cursor-zoom-in transition duration-300" onclick="openModal()">
+                    
+                    <!-- Navigation Buttons -->
+                    <button onclick="changeSlide(-1)" class="absolute left-4 bg-white/10 hover:bg-white/30 p-3 rounded-full backdrop-blur-sm transition text-white">
+                        <i class="fa-solid fa-chevron-left text-xl"></i>
+                    </button>
+                    <button onclick="changeSlide(1)" class="absolute right-4 bg-white/10 hover:bg-white/30 p-3 rounded-full backdrop-blur-sm transition text-white">
+                        <i class="fa-solid fa-chevron-right text-xl"></i>
+                    </button>
+                </div>
+                <div class="p-4 bg-gray-900 text-center text-sm text-gray-400">
+                    Clique na imagem para ampliar.
+                </div>
+            </div>
+        </section>
+
+        <!-- Section II: Flashcards -->
+        <section id="flashcards" class="bg-gray-100 py-16 px-4">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="font-serif text-3xl font-bold text-royal-purple border-b-4 border-accent-gold inline-block pb-2 px-4">FLASHCARDS & TREINO</h2>
+                    <p class="mt-4 text-gray-600">Clique nos cartões para ver a resposta ou jogue o jogo de correspondência.</p>
+                </div>
+
+                <!-- Tabs -->
+                <div class="flex justify-center mb-8">
+                    <button onclick="switchTab('flashcards-view')" id="tab-flash" class="px-6 py-2 bg-royal-purple text-white rounded-l-lg font-bold shadow-md active-tab">Estudo (Cards)</button>
+                    <button onclick="switchTab('matching-game-1')" id="tab-match" class="px-6 py-2 bg-white text-royal-purple border border-l-0 border-royal-purple rounded-r-lg font-bold shadow-md hover:bg-gray-50">Jogo de Memória</button>
+                </div>
+
+                <!-- Container: Flip Cards -->
+                <div id="flashcards-view" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- JS Generated Cards -->
+                </div>
+
+                <!-- Container: Matching Game -->
+                <div id="matching-game-1" class="hidden">
+                    <div class="bg-white p-6 rounded-xl shadow-lg">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-xl text-royal-purple">Correspondência: Termo vs Definição</h3>
+                            <button onclick="initMatchingGame('flashcard')" class="bg-accent-gold text-classic-dark px-4 py-1 rounded hover:bg-yellow-500 font-bold"><i class="fa-solid fa-rotate mr-1"></i> Reiniciar</button>
+                        </div>
+                        <div id="match-container-1" class="grid grid-cols-2 gap-4">
+                            <!-- JS Generated Items -->
+                        </div>
+                        <div id="match-feedback-1" class="mt-4 text-center font-bold text-lg h-8"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section III: Glossário -->
+        <section id="glossary" class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="font-serif text-3xl font-bold text-royal-purple border-b-4 border-accent-gold inline-block pb-2 px-4">GLOSSÁRIO</h2>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- Glossary List -->
+                <div class="lg:col-span-2 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+                    <div class="p-4 bg-royal-purple text-white flex justify-between items-center">
+                        <h3 class="font-bold text-lg"><i class="fa-solid fa-book-medical mr-2"></i> Termos Chave</h3>
+                        <div class="relative">
+                            <input type="text" id="glossary-search" placeholder="Pesquisar..." class="pl-8 pr-3 py-1 rounded-full text-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-accent-gold">
+                            <i class="fa-solid fa-search absolute left-2.5 top-1.5 text-gray-400 text-xs"></i>
+                        </div>
+                    </div>
+                    <div id="glossary-list" class="max-h-[600px] overflow-y-auto p-4 space-y-4 divide-y">
+                        <!-- JS Generated Glossary -->
+                    </div>
+                </div>
+
+                <!-- Mini Game 2: Glossary Match -->
+                <div class="lg:col-span-1">
+                    <div class="bg-royal-purple/5 p-6 rounded-xl border border-royal-purple/20 sticky top-24">
+                        <h3 class="font-serif text-xl font-bold text-royal-purple mb-4 text-center">Desafio Rápido</h3>
+                        <p class="text-sm text-gray-600 mb-4 text-center">Associe o termo correto à definição apresentada.</p>
+                        
+                        <div id="glossary-game-area" class="space-y-4">
+                            <div class="bg-white p-4 rounded shadow text-center min-h-[80px] flex items-center justify-center">
+                                <p id="gg-definition" class="font-medium text-gray-800 italic">Carregando...</p>
+                            </div>
+                            <div id="gg-options" class="grid grid-cols-1 gap-2">
+                                <!-- Options -->
+                            </div>
+                            <div id="gg-feedback" class="text-center font-bold h-6"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section IV: Aprendizagem Ativa (Quiz) -->
+        <section id="quiz" class="bg-classic-dark text-white py-16 px-4">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="font-serif text-3xl font-bold text-accent-gold border-b-4 border-royal-purple inline-block pb-2 px-4">AVALIAÇÃO & CERTIFICAÇÃO</h2>
+                    <p class="mt-4 text-gray-300">Responda ao questionário para obter o seu certificado.</p>
+                </div>
+
+                <!-- Quiz Container -->
+                <div class="bg-white text-gray-800 rounded-xl shadow-2xl overflow-hidden mb-12">
+                    <div class="p-6 bg-royal-purple text-white flex justify-between items-center">
+                        <span class="font-bold text-lg">Questionário Final</span>
+                        <span id="quiz-score" class="bg-accent-gold text-classic-dark px-3 py-1 rounded-full font-bold">Pontos: 0</span>
+                    </div>
+
+                    <div id="quiz-questions-container" class="p-6 space-y-8">
+                        <!-- JS Generated Questions -->
+                    </div>
+                </div>
+
+                <!-- Certification Section -->
+                <div id="certification-section" class="bg-gray-800 p-8 rounded-xl border border-gray-700 text-center hidden">
+                    <h3 class="text-2xl font-serif text-accent-gold mb-4">Parabéns! Completou o Percurso.</h3>
+                    <p class="mb-6">Insira o seu nome para gerar o certificado de conclusão.</p>
+                    <div class="flex flex-col sm:flex-row justify-center gap-4 max-w-md mx-auto">
+                        <input type="text" id="student-name" placeholder="Seu Nome Completo" class="px-4 py-2 rounded text-gray-900 focus:outline-none focus:ring-2 focus:ring-accent-gold w-full">
+                        <button onclick="generateCertificate()" class="bg-accent-gold hover:bg-yellow-500 text-classic-dark font-bold px-6 py-2 rounded transition shadow-lg w-full sm:w-auto">
+                            <i class="fa-solid fa-print mr-2"></i> Emitir Certificado
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Footer -->
+        <footer class="bg-black text-gray-500 py-8 text-center text-sm">
+            <p>Rui Ferreira e Teodósio Faria© 2026 Guia Educativo do Sistema Cardiovascular</p>
+        </footer>
+
+    </main>
+
+    <!-- User Guide Modal -->
+    <div id="user-guide-modal" class="fixed inset-0 z-[100] hidden bg-black/80 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="bg-royal-purple p-6 flex justify-between items-center text-white sticky top-0">
+                <h2 class="text-2xl font-serif font-bold"><i class="fa-solid fa-circle-info mr-2"></i> Guia do Utilizador</h2>
+                <button onclick="toggleUserGuide()" class="hover:text-accent-gold text-2xl font-bold">&times;</button>
+            </div>
+            <div class="p-8 space-y-6 text-gray-700">
+                
+                <div class="space-y-2">
+                    <h3 class="font-bold text-royal-purple text-lg border-b pb-2"><i class="fa-solid fa-book-open mr-2"></i> Guia de Estudo</h3>
+                    <p>Explore os conteúdos teóricos através dos tópicos interativos. Clique nas barras para expandir os resumos (acordeão). Utilize as setas na galeria de imagens para ver os slides anatómicos e clique na imagem para fazer zoom.</p>
+                </div>
+
+                <div class="space-y-2">
+                    <h3 class="font-bold text-royal-purple text-lg border-b pb-2"><i class="fa-solid fa-layer-group mr-2"></i> Flashcards</h3>
+                    <p><strong>Modo Estudo:</strong> Clique nos cartões para os virar e ver a definição no verso.</p>
+                    <p><strong>Jogo de Memória:</strong> Encontre os pares correspondentes (Termo + Definição). Selecione um cartão e tente encontrar o seu par.</p>
+                </div>
+
+                <div class="space-y-2">
+                    <h3 class="font-bold text-royal-purple text-lg border-b pb-2"><i class="fa-solid fa-list-ul mr-2"></i> Glossário</h3>
+                    <p>Consulte a lista de termos técnicos. Use a barra de pesquisa para filtrar. No lado direito, teste o seu conhecimento rápido selecionando o termo correto para a definição apresentada.</p>
+                </div>
+
+                <div class="space-y-2">
+                    <h3 class="font-bold text-royal-purple text-lg border-b pb-2"><i class="fa-solid fa-award mr-2"></i> Quiz e Certificação</h3>
+                    <p>Responda a todas as perguntas do questionário final. Após responder corretamente, insira o seu nome para gerar e imprimir o seu <strong>Certificado de Conclusão</strong> personalizado.</p>
+                </div>
+
+                <div class="mt-8 text-center">
+                    <button onclick="toggleUserGuide()" class="bg-royal-purple text-white px-6 py-2 rounded-full hover:bg-royal-purple-dark transition font-bold">Entendido, vamos começar!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Images -->
+    <div id="image-modal" class="fixed inset-0 z-[100] hidden bg-black/95 flex items-center justify-center p-4" onclick="closeModal()">
+        <button class="absolute top-4 right-4 text-white text-4xl hover:text-accent-gold">&times;</button>
+        <img id="modal-img" src="" alt="Zoom" class="max-w-full max-h-[90vh] rounded shadow-2xl border-2 border-white">
+    </div>
+
+    <!-- Hidden Certificate Template for Print -->
+    <div id="certificate-area" class="hidden flex-col items-center justify-center text-center p-20 font-serif border-[20px] border-double border-royal-purple bg-white text-classic-dark bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')]">
+        <div class="border-b-2 border-royal-purple w-full mb-10"></div>
+        <h1 class="text-6xl font-black text-royal-purple uppercase tracking-widest mb-4">Certificado</h1>
+        <h2 class="text-3xl italic text-gray-600 mb-12">de Conclusão</h2>
+        
+        <p class="text-xl mb-4">Certifica-se que</p>
+        <h3 id="cert-name" class="text-5xl font-bold text-accent-dark mb-8 border-b-2 border-gray-300 inline-block px-10 pb-2">Nome do Aluno</h3>
+        
+        <p class="text-xl max-w-2xl mx-auto leading-relaxed mb-12">
+            Completou com sucesso o módulo de aprendizagem interativa sobre o <br>
+            <strong>Sistema Cardiovascular: Anatomia e Funcionamento</strong>.
+        </p>
+        
+        <div class="flex justify-around w-full mt-10">
+            <div class="text-center">
+                <p id="cert-date" class="font-bold border-t border-gray-400 pt-2 px-10">Data</p>
+            </div>
+            <div class="text-center">
+                <div class="text-4xl text-accent-gold font-bold mb-2" id="cert-score">0%</div>
+                <p class="font-bold border-t border-gray-400 pt-2 px-10">Pontuação Final</p>
+            </div>
+        </div>
+        <div class="border-t-2 border-royal-purple w-full mt-20"></div>
+        <i class="fa-solid fa-heart-pulse text-4xl text-royal-purple mt-8"></i>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- DATA ---
+        
+        const studyData = [
+            {
+                title: "1. A Arquitetura do Coração",
+                content: `
+                    <ul class="list-disc pl-5 space-y-2 text-gray-700">
+                        <li><strong>Miocárdio:</strong> Músculo involuntário que se contrai ritmicamente (~100.000 vezes/dia).</li>
+                        <li><strong>4 Câmaras:</strong> 2 Aurículas (superiores, recebem sangue) e 2 Ventrículos (inferiores, bombeiam sangue).</li>
+                        <li><strong>Septo:</strong> Parede que separa o lado direito (venoso) do esquerdo (arterial).</li>
+                        <li><strong>Válvulas:</strong> Portões de sentido único. Auriculoventriculares (entre câmaras) e Semilunares (saída para artérias).</li>
+                    </ul>`
+            },
+            {
+                title: "2. As Grandes Autoestradas (Vasos)",
+                content: `
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full text-sm text-left text-gray-600">
+                            <thead class="bg-gray-100 text-royal-purple uppercase font-bold">
+                                <tr><th class="px-4 py-2">Vaso</th><th class="px-4 py-2">Função</th></tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr><td class="px-4 py-2 font-bold">Veias Cavas</td><td>Trazem sangue do corpo para a aurícula direita.</td></tr>
+                                <tr><td class="px-4 py-2 font-bold">Artéria Pulmonar</td><td>Leva sangue do ventrículo direito aos pulmões.</td></tr>
+                                <tr><td class="px-4 py-2 font-bold">Veias Pulmonares</td><td>Trazem sangue oxigenado dos pulmões à aurícula esquerda.</td></tr>
+                                <tr><td class="px-4 py-2 font-bold">Aorta</td><td>Maior artéria; distribui sangue do ventrículo esquerdo para o corpo.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>`
+            },
+            {
+                title: "3. O Ciclo Cardíaco",
+                content: `
+                    <ol class="list-decimal pl-5 space-y-2 text-gray-700">
+                        <li><strong>Diástole Geral:</strong> Relaxamento. Sangue enche aurículas e flui para ventrículos.</li>
+                        <li><strong>Sístole Auricular:</strong> Contração das aurículas para encher totalmente os ventrículos.</li>
+                        <li><strong>Sístole Ventricular:</strong> Contração forte dos ventrículos. Válvulas fecham ("TUM") e sangue sai pelas artérias.</li>
+                    </ol>`
+            },
+            {
+                title: "4. Circulação Dupla",
+                content: `
+                    <ul class="list-disc pl-5 space-y-2 text-gray-700">
+                        <li><strong>Pulmonar (Pequena):</strong> Coração ➔ Pulmões ➔ Coração. Objetivo: Oxigenação (Hematose).</li>
+                        <li><strong>Sistémica (Grande):</strong> Coração ➔ Corpo ➔ Coração. Objetivo: Nutrir células e recolher lixo.</li>
+                    </ul>`
+            },
+            {
+                title: "5. Doenças e Prevenção",
+                content: `
+                    <p class="mb-2"><strong>Riscos:</strong> Hipertensão, Aterosclerose (gordura), Enfarte, AVC.</p>
+                    <p><strong>Vilões:</strong> Sedentarismo, Má Alimentação (sal/gordura), Tabagismo, Stress.</p>
+                    <p class="mt-2 text-green-600 font-bold"><i class="fa-solid fa-check"></i> Solução: Exercício e Dieta Equilibrada!</p>`
+            }
+        ];
+
+        const flashcardsData = [
+            { term: "Miocárdio", def: "Músculo cardíaco especializado, involuntário e incansável." },
+            { term: "Aurículas", def: "Câmaras superiores que recebem o sangue." },
+            { term: "Ventrículos", def: "Câmaras inferiores que bombeiam o sangue para fora." },
+            { term: "Septo", def: "Parede que separa o lado direito e esquerdo do coração." },
+            { term: "Aorta", def: "Maior artéria do corpo, sai do ventrículo esquerdo." },
+            { term: "Diástole", def: "Fase de relaxamento do músculo cardíaco." },
+            { term: "Sístole", def: "Fase de contração do músculo cardíaco." },
+            { term: "Hematose", def: "Troca gasosa (oxigenação) que ocorre nos pulmões." },
+            { term: "Veias Cavas", def: "Trazem sangue venoso do corpo para o coração." },
+            { term: "Aterosclerose", def: "Acumulação de gordura nas artérias." }
+        ];
+
+        const glossaryData = [
+            { term: "Aorta", def: "A maior artéria do corpo, responsável por distribuir o sangue oxigenado do ventrículo esquerdo para todos os órgãos e tecidos." },
+            { term: "Aterosclerose", def: "Doença caracterizada pelo estreitamento das artérias devido à acumulação de placas de gordura." },
+            { term: "Aurículas", def: "As duas câmaras superiores do coração que recebem o sangue proveniente das veias." },
+            { term: "AVC", def: "Acidente Vascular Cerebral: Evento crítico causado pela interrupção do fluxo sanguíneo para o cérebro." },
+            { term: "Circulação Sistémica", def: "Também chamada de 'grande circulação', é o trajeto do sangue entre o coração e o resto do organismo." },
+            { term: "Diástole", def: "Fase do ciclo cardíaco em que o músculo relaxa e as câmaras se enchem de sangue." },
+            { term: "Enfarte do Miocárdio", def: "Condição em que parte do músculo cardíaco morre devido à interrupção do seu suprimento de sangue." },
+            { term: "Hipertensão Arterial", def: "Condição médica em que a força do sangue contra as paredes das artérias é cronicamente elevada." },
+            { term: "Miocárdio", def: "O tecido muscular específico do coração, responsável pelas suas contrações rítmicas." },
+            { term: "Septo", def: "Parede muscular que divide o coração longitudinalmente em lado direito e lado esquerdo." },
+            { term: "Sístole", def: "Fase de contração do músculo cardíaco que expulsa o sangue das câmaras." },
+            { term: "Válvulas Semilunares", def: "Válvulas localizadas na base da artéria aorta e da artéria pulmonar." },
+            { term: "Ventrículos", def: "As duas câmaras inferiores do coração, com paredes mais espessas." },
+            { term: "Veias Cavas", def: "Grandes veias que trazem o sangue venoso de todo o corpo para a aurícula direita." }
+        ];
+
+        const quizData = [
+            {
+                q: "1. Qual é a função principal do septo no coração?",
+                options: ["Bombear o sangue", "Impedir a mistura de sangue venoso com arterial", "Produzir o som TUM", "Receber sangue"],
+                correct: 1,
+                feedback: "O septo é a parede muscular que separa os dois lados do coração."
+            },
+            {
+                q: "2. Durante qual fase o miocárdio relaxa e o sangue flui para os ventrículos?",
+                options: ["Sístole Ventricular", "Sístole Auricular", "Diástole Geral", "Hipertensão"],
+                correct: 2,
+                feedback: "Na diástole geral, o coração está em repouso relativo."
+            },
+            {
+                q: "3. Qual é o objetivo principal da circulação sistémica?",
+                options: ["Libertar CO2", "Nutrir os tecidos e distribuir oxigénio", "Passar pelas válvulas", "Transportar sangue venoso"],
+                correct: 1,
+                feedback: "A grande circulação leva vida e nutrientes a cada célula."
+            },
+            {
+                q: "4. O que causa o som 'TUM' no batimento cardíaco?",
+                options: ["Relaxamento auricular", "Fecho das válvulas auriculoventriculares", "Fluxo na aorta", "Entrada de ar"],
+                correct: 1,
+                feedback: "O som é o resultado mecânico do fecho das válvulas na sístole ventricular."
+            },
+            {
+                q: "5. Qual destas condições é a acumulação de gordura nas artérias?",
+                options: ["Hipertensão", "AVC", "Aterosclerose", "Sístole"],
+                correct: 2,
+                feedback: "Aterosclerose é o entupimento das 'autoestradas' por gordura."
+            },
+            {
+                type: "tf",
+                q: "6. O miocárdio é um músculo de contração voluntária.",
+                correct: false,
+                feedback: "Falso. Ele funciona autonomamente sem controlo consciente."
+            },
+            {
+                type: "tf",
+                q: "7. Na circulação pulmonar, o sangue sai rico em oxigénio e regressa rico em CO2.",
+                correct: false,
+                feedback: "Falso. É o contrário: sai venoso e regressa arterial."
+            },
+            {
+                type: "tf",
+                q: "8. A sístole auricular ocorre para garantir que os ventrículos ficam cheios.",
+                correct: true,
+                feedback: "Verdadeiro. É o 'pequeno empurrão' final."
+            },
+            {
+                q: "9. Qual é o componente do sangue responsável pelo transporte de oxigénio?",
+                options: ["Plaquetas", "Glóbulos Brancos", "Glóbulos Vermelhos", "Plasma"],
+                correct: 2,
+                feedback: "Os glóbulos vermelhos contêm hemoglobina, que se liga ao oxigénio."
+            },
+            {
+                q: "10. Onde se localiza o pacemaker natural do coração (nó sinusal)?",
+                options: ["Aurícula Direita", "Ventrículo Esquerdo", "Aorta", "Septo"],
+                correct: 0,
+                feedback: "O impulso elétrico nasce na aurícula direita."
+            },
+            {
+                type: "tf",
+                q: "11. Os capilares têm paredes espessas para suportar alta pressão.",
+                correct: false,
+                feedback: "Falso. Os capilares têm paredes muito finas para permitir as trocas gasosas."
+            },
+            {
+                type: "tf",
+                q: "12. O pericárdio é uma membrana que envolve e protege o coração.",
+                correct: true,
+                feedback: "Verdadeiro. É como um saco protetor que envolve o coração."
+            },
+            {
+                q: "13. Qual é a válvula localizada entre a aurícula esquerda e o ventrículo esquerdo?",
+                options: ["Tricúspide", "Mitral (Bicúspide)", "Aórtica", "Pulmonar"],
+                correct: 1,
+                feedback: "A válvula mitral regula o fluxo no lado esquerdo do coração."
+            },
+            {
+                type: "tf",
+                q: "14. A frequência cardíaca normal em repouso é entre 60 a 100 batimentos por minuto.",
+                correct: true,
+                feedback: "Verdadeiro. Esta é a faixa padrão considerada normal."
+            },
+            {
+                q: "15. Qual é o principal componente do plasma sanguíneo?",
+                options: ["Proteínas", "Glóbulos Vermelhos", "Água", "Sais Minerais"],
+                correct: 2,
+                feedback: "A água constitui cerca de 90% do plasma sanguíneo."
+            },
+            {
+                type: "tf",
+                q: "16. As artérias transportam sempre sangue oxigenado.",
+                correct: false,
+                feedback: "Falso. A artéria pulmonar transporta sangue venoso do coração para os pulmões."
+            },
+            {
+                q: "17. Qual instrumento é utilizado para medir a pressão arterial?",
+                options: ["Termómetro", "Estetoscópio", "Esfigmomanómetro", "Oxímetro"],
+                correct: 2,
+                feedback: "O esfigmomanómetro é o aparelho usado para aferir a tensão arterial."
+            },
+            {
+                type: "tf",
+                q: "18. O exercício físico regular ajuda a diminuir o risco de doenças cardiovasculares.",
+                correct: true,
+                feedback: "Verdadeiro. O desporto fortalece o miocárdio e melhora a circulação."
+            }
+        ];
+
+        // --- STATE VARIABLES ---
+        let currentSlide = 1;
+        const totalSlides = 15;
+        let quizScore = 0;
+        let answeredQuestions = new Set();
+        let selectedMatchItem = null; // For Memory Game
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderAccordion();
+            renderFlashcards();
+            initMatchingGame('flashcard');
+            renderGlossary();
+            initGlossaryMiniGame();
+            renderQuiz();
+            
+            // Search Listener
+            document.getElementById('glossary-search').addEventListener('input', (e) => {
+                renderGlossary(e.target.value);
+            });
+        });
+
+        // --- FUNCTIONS: STUDY GUIDE ---
+        
+        function renderAccordion() {
+            const container = document.getElementById('accordion-container');
+            container.innerHTML = studyData.map((item, index) => `
+                <details class="group bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                    <summary class="flex justify-between items-center font-medium cursor-pointer list-none p-4 bg-gray-50 hover:bg-gray-100 text-royal-purple transition">
+                        <span class="font-serif font-bold text-lg">${item.title}</span>
+                        <span class="transition group-open:rotate-180">
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </span>
+                    </summary>
+                    <div class="text-gray-600 p-4 border-t border-gray-100 leading-relaxed bg-white">
+                        ${item.content}
+                    </div>
+                </details>
+            `).join('');
+        }
+
+        function changeSlide(direction) {
+            currentSlide += direction;
+            if (currentSlide < 1) currentSlide = totalSlides;
+            if (currentSlide > totalSlides) currentSlide = 1;
+            
+            const img = document.getElementById('current-slide');
+            const counter = document.getElementById('slide-counter');
+            
+            // Note: In a real environment, verify file paths. 
+            // Using logic to switch between local paths as requested.
+            img.src = `./slide${currentSlide}.jpg`;
+            counter.innerText = `${currentSlide} / ${totalSlides}`;
+        }
+
+        // --- FUNCTIONS: FLASHCARDS & GAMES ---
+
+        function switchTab(tabId) {
+            document.getElementById('flashcards-view').classList.add('hidden');
+            document.getElementById('matching-game-1').classList.add('hidden');
+            document.getElementById(tabId).classList.remove('hidden');
+            
+            // Style tabs
+            const btnFlash = document.getElementById('tab-flash');
+            const btnMatch = document.getElementById('tab-match');
+            
+            if(tabId === 'flashcards-view') {
+                btnFlash.classList.add('bg-royal-purple', 'text-white');
+                btnFlash.classList.remove('bg-white', 'text-royal-purple');
+                btnMatch.classList.add('bg-white', 'text-royal-purple');
+                btnMatch.classList.remove('bg-royal-purple', 'text-white');
+            } else {
+                btnMatch.classList.add('bg-royal-purple', 'text-white');
+                btnMatch.classList.remove('bg-white', 'text-royal-purple');
+                btnFlash.classList.add('bg-white', 'text-royal-purple');
+                btnFlash.classList.remove('bg-royal-purple', 'text-white');
+            }
+        }
+
+        function renderFlashcards() {
+            const container = document.getElementById('flashcards-view');
+            container.innerHTML = flashcardsData.map((card, index) => `
+                <div class="group h-48 w-full cursor-pointer perspective-1000" onclick="this.querySelector('.card-inner').classList.toggle('rotate-y-180')">
+                    <div class="card-inner relative w-full h-full text-center transition-all duration-500 transform-style-3d shadow-xl rounded-xl">
+                        <!-- Front -->
+                        <div class="absolute w-full h-full backface-hidden bg-white rounded-xl flex items-center justify-center p-4 border-2 border-royal-purple/10">
+                            <h3 class="text-xl font-bold text-royal-purple">${card.term}</h3>
+                            <i class="fa-solid fa-rotate absolute bottom-2 right-2 text-gray-300 text-sm"></i>
+                        </div>
+                        <!-- Back -->
+                        <div class="absolute w-full h-full backface-hidden rotate-y-180 bg-royal-purple text-white rounded-xl flex items-center justify-center p-4">
+                            <p class="font-medium">${card.def}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function initMatchingGame(type) {
+            const container = document.getElementById('match-container-1');
+            const feedback = document.getElementById('match-feedback-1');
+            feedback.innerText = "";
+            
+            // Prepare Data: Take first 6 for simplicity
+            let gameItems = [];
+            const source = type === 'flashcard' ? flashcardsData.slice(0, 6) : glossaryData.slice(0, 6);
+            
+            source.forEach((item, idx) => {
+                gameItems.push({ id: idx, type: 'term', text: item.term });
+                gameItems.push({ id: idx, type: 'def', text: item.def });
+            });
+            
+            // Shuffle
+            gameItems.sort(() => Math.random() - 0.5);
+            
+            container.innerHTML = gameItems.map((item, index) => `
+                <div class="match-card bg-gray-50 border-2 border-gray-200 p-3 rounded-lg cursor-pointer hover:bg-gray-100 text-sm flex items-center justify-center text-center h-24 select-none transition"
+                     data-id="${item.id}" data-type="${item.type}" onclick="handleMatchClick(this)">
+                    ${item.text}
+                </div>
+            `).join('');
+            
+            selectedMatchItem = null;
+        }
+
+        function handleMatchClick(element) {
+            if (element.classList.contains('bg-green-100')) return; // Already matched
+            
+            if (!selectedMatchItem) {
+                // First selection
+                selectedMatchItem = element;
+                element.classList.add('border-royal-purple', 'bg-royal-purple/10');
+            } else {
+                // Second selection
+                const feedback = document.getElementById('match-feedback-1');
+                
+                if (element === selectedMatchItem) {
+                    element.classList.remove('border-royal-purple', 'bg-royal-purple/10');
+                    selectedMatchItem = null;
+                    return;
+                }
+
+                const id1 = selectedMatchItem.getAttribute('data-id');
+                const id2 = element.getAttribute('data-id');
+                const type1 = selectedMatchItem.getAttribute('data-type');
+                const type2 = element.getAttribute('data-type');
+
+                if (id1 === id2 && type1 !== type2) {
+                    // Match!
+                    selectedMatchItem.classList.remove('border-royal-purple', 'bg-royal-purple/10');
+                    selectedMatchItem.classList.add('bg-green-100', 'border-green-500', 'text-green-800', 'opacity-50');
+                    element.classList.add('bg-green-100', 'border-green-500', 'text-green-800', 'opacity-50');
+                    feedback.innerHTML = '<span class="text-green-600"><i class="fa-solid fa-check"></i> Correto!</span>';
+                    selectedMatchItem = null;
+                } else {
+                    // Wrong
+                    selectedMatchItem.classList.remove('border-royal-purple', 'bg-royal-purple/10');
+                    selectedMatchItem.classList.add('bg-red-100', 'border-red-500');
+                    element.classList.add('bg-red-100', 'border-red-500');
+                    feedback.innerHTML = '<span class="text-red-600"><i class="fa-solid fa-xmark"></i> Tente novamente.</span>';
+                    
+                    const temp1 = selectedMatchItem;
+                    setTimeout(() => {
+                        temp1.classList.remove('bg-red-100', 'border-red-500');
+                        element.classList.remove('bg-red-100', 'border-red-500');
+                        feedback.innerText = "";
+                    }, 1000);
+                    selectedMatchItem = null;
+                }
+            }
+        }
+
+        // --- FUNCTIONS: GLOSSARY ---
+
+        function renderGlossary(filter = "") {
+            const container = document.getElementById('glossary-list');
+            const filtered = glossaryData.filter(g => 
+                g.term.toLowerCase().includes(filter.toLowerCase()) || 
+                g.def.toLowerCase().includes(filter.toLowerCase())
+            );
+            
+            if (filtered.length === 0) {
+                container.innerHTML = '<p class="text-center text-gray-500 p-4">Nenhum termo encontrado.</p>';
+                return;
+            }
+
+            container.innerHTML = filtered.map(item => `
+                <div class="py-3 hover:bg-gray-50 transition px-2 rounded">
+                    <strong class="text-royal-purple block text-lg font-serif">${item.term}</strong>
+                    <p class="text-gray-600 text-sm mt-1">${item.def}</p>
+                </div>
+            `).join('');
+        }
+
+        function initGlossaryMiniGame() {
+            // Pick random term
+            const targetIndex = Math.floor(Math.random() * glossaryData.length);
+            const target = glossaryData[targetIndex];
+            
+            document.getElementById('gg-definition').innerText = target.def;
+            
+            // Generate options (1 correct + 2 wrong)
+            let options = [target];
+            while (options.length < 3) {
+                let random = glossaryData[Math.floor(Math.random() * glossaryData.length)];
+                if (!options.includes(random)) options.push(random);
+            }
+            options.sort(() => Math.random() - 0.5);
+            
+            const container = document.getElementById('gg-options');
+            container.innerHTML = options.map(opt => `
+                <button onclick="checkGlossaryAnswer('${opt.term}', '${target.term}')" class="w-full bg-white border border-gray-300 py-2 rounded shadow-sm hover:bg-royal-purple hover:text-white transition font-medium text-sm">
+                    ${opt.term}
+                </button>
+            `).join('');
+            
+            document.getElementById('gg-feedback').innerText = "";
+        }
+
+        function checkGlossaryAnswer(selected, correct) {
+            const feedback = document.getElementById('gg-feedback');
+            if (selected === correct) {
+                feedback.innerHTML = '<span class="text-green-600 text-sm">Correto! Próximo...</span>';
+                setTimeout(initGlossaryMiniGame, 1500);
+            } else {
+                feedback.innerHTML = '<span class="text-red-600 text-sm">Errado, tente de novo.</span>';
+            }
+        }
+
+        // --- FUNCTIONS: QUIZ ---
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-questions-container');
+            container.innerHTML = quizData.map((q, index) => {
+                let inputHTML = '';
+                
+                if (q.type === 'tf') {
+                    inputHTML = `
+                        <div class="flex gap-4 mt-3">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="q${index}" value="true" class="form-radio text-royal-purple">
+                                <span>Verdadeiro</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="q${index}" value="false" class="form-radio text-royal-purple">
+                                <span>Falso</span>
+                            </label>
+                        </div>`;
+                } else {
+                    inputHTML = `
+                        <div class="mt-3 space-y-2">
+                            ${q.options.map((opt, i) => `
+                                <label class="flex items-center space-x-2 cursor-pointer p-2 rounded hover:bg-gray-100">
+                                    <input type="radio" name="q${index}" value="${i}" class="form-radio text-royal-purple">
+                                    <span>${opt}</span>
+                                </label>
+                            `).join('')}
+                        </div>`;
+                }
+
+                return `
+                    <div class="border-b border-gray-200 pb-6 last:border-0" id="question-block-${index}">
+                        <p class="font-bold text-lg text-royal-purple">${q.q}</p>
+                        ${inputHTML}
+                        <div id="feedback-${index}" class="hidden mt-3 p-3 rounded-lg text-sm bg-gray-50 border-l-4"></div>
+                        <button onclick="checkQuestion(${index})" id="btn-check-${index}" class="mt-3 px-4 py-1 bg-royal-purple text-white text-sm rounded hover:bg-royal-purple-dark">Verificar</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function checkQuestion(index) {
+            if (answeredQuestions.has(index)) return;
+
+            const q = quizData[index];
+            const inputs = document.getElementsByName(`q${index}`);
+            let selectedValue = null;
+
+            for (const input of inputs) {
+                if (input.checked) {
+                    selectedValue = input.value;
+                    break;
+                }
+            }
+
+            if (!selectedValue) {
+                alert("Por favor, selecione uma resposta.");
+                return;
+            }
+
+            const feedbackEl = document.getElementById(`feedback-${index}`);
+            const btn = document.getElementById(`btn-check-${index}`);
+            let isCorrect = false;
+
+            if (q.type === 'tf') {
+                isCorrect = (selectedValue === 'true' && q.correct === true) || (selectedValue === 'false' && q.correct === false);
+            } else {
+                isCorrect = parseInt(selectedValue) === q.correct;
+            }
+
+            feedbackEl.classList.remove('hidden');
+            if (isCorrect) {
+                feedbackEl.classList.add('bg-green-50', 'border-green-500', 'text-green-800');
+                feedbackEl.innerHTML = `<strong><i class="fa-solid fa-check"></i> Correto!</strong> ${q.feedback}`;
+                // Dynamic scoring: 100 / total questions
+                const pointsPerQuestion = 100 / quizData.length;
+                quizScore += pointsPerQuestion;
+                document.getElementById('quiz-score').innerText = `Pontos: ${Math.round(quizScore)}`;
+            } else {
+                feedbackEl.classList.add('bg-red-50', 'border-red-500', 'text-red-800');
+                feedbackEl.innerHTML = `<strong><i class="fa-solid fa-xmark"></i> Incorreto.</strong> ${q.feedback}`;
+            }
+
+            answeredQuestions.add(index);
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            btn.disabled = true;
+
+            // Check if finished
+            if (answeredQuestions.size === quizData.length) {
+                document.getElementById('certification-section').classList.remove('hidden');
+                document.getElementById('certification-section').scrollIntoView({behavior: "smooth"});
+            }
+        }
+
+        function generateCertificate() {
+            const name = document.getElementById('student-name').value;
+            if (!name.trim()) {
+                alert("Por favor, introduza o seu nome.");
+                return;
+            }
+            
+            const date = new Date().toLocaleDateString('pt-PT');
+            
+            document.getElementById('cert-name').innerText = name;
+            document.getElementById('cert-date').innerText = date;
+            document.getElementById('cert-score').innerText = Math.round(quizScore) + "%";
+            
+            // Allow DOM update before printing
+            setTimeout(() => {
+                window.print();
+            }, 500);
+        }
+
+        // --- UTILS ---
+        
+        function openModal() {
+            const modal = document.getElementById('image-modal');
+            const modalImg = document.getElementById('modal-img');
+            const currentSrc = document.getElementById('current-slide').src;
+            modalImg.src = currentSrc;
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('image-modal').classList.add('hidden');
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        function toggleUserGuide() {
+            const modal = document.getElementById('user-guide-modal');
+            modal.classList.toggle('hidden');
+        }
+    </script>
+</body>
+</html>
