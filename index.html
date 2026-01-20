@@ -82,6 +82,46 @@
             background: #555; 
         }
 
+        /* Anatomy Game Styles */
+        .anatomy-dropzone {
+            transition: all 0.3s ease;
+            border: 2px dashed rgba(94, 58, 140, 0.5);
+            background: rgba(255, 255, 255, 0.4);
+        }
+        .anatomy-dropzone.hovered {
+            background: rgba(212, 175, 55, 0.4); /* accent-gold */
+            border-color: #d4af37;
+            transform: scale(1.1);
+        }
+        .anatomy-dropzone.correct {
+            background: rgba(34, 197, 94, 0.8) !important; /* green-500 */
+            border: 2px solid #166534;
+            color: white;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            text-align: center;
+            line-height: 1.1;
+        }
+        .anatomy-draggable {
+            cursor: grab;
+            transition: transform 0.2s;
+        }
+        .anatomy-draggable:active {
+            cursor: grabbing;
+        }
+        .anatomy-draggable.selected {
+            background-color: #d4af37; /* accent-gold */
+            color: #2c241b;
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
+        }
+        .anatomy-draggable.matched {
+            display: none;
+        }
+        
         /* Print Styles for Certificate */
         @media print {
             body {
@@ -146,6 +186,7 @@
                         <a href="#intro" class="hover:bg-royal-purple-dark px-3 py-2 rounded-md text-sm font-medium transition">Início</a>
                         <a href="#guide" class="hover:bg-royal-purple-dark px-3 py-2 rounded-md text-sm font-medium transition">Guia</a>
                         <a href="#flashcards" class="hover:bg-royal-purple-dark px-3 py-2 rounded-md text-sm font-medium transition">Flashcards</a>
+                        <a href="#anatomy" class="hover:bg-royal-purple-dark px-3 py-2 rounded-md text-sm font-medium transition">Anatomia</a>
                         <a href="#glossary" class="hover:bg-royal-purple-dark px-3 py-2 rounded-md text-sm font-medium transition">Glossário</a>
                         <a href="#quiz" class="bg-accent-gold text-classic-dark hover:bg-yellow-500 px-3 py-2 rounded-md text-sm font-bold transition shadow-md">Quiz</a>
                         <button onclick="toggleUserGuide()" class="ml-2 text-white hover:text-accent-gold transition" title="Guia do Utilizador">
@@ -170,6 +211,7 @@
                 <a href="#intro" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-royal-purple-dark">Início</a>
                 <a href="#guide" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-royal-purple-dark">Guia</a>
                 <a href="#flashcards" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-royal-purple-dark">Flashcards</a>
+                <a href="#anatomy" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-royal-purple-dark">Anatomia</a>
                 <a href="#glossary" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-royal-purple-dark">Glossário</a>
                 <a href="#quiz" class="block px-3 py-2 rounded-md text-base font-medium bg-accent-gold text-classic-dark">Quiz</a>
             </div>
@@ -280,6 +322,44 @@
             </div>
         </section>
 
+        <!-- Section V: Anatomia Interativa (New Section) -->
+        <section id="anatomy" class="bg-white py-16 px-4 border-t border-gray-200">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="font-serif text-3xl font-bold text-royal-purple border-b-4 border-accent-gold inline-block pb-2 px-4">ANATOMIA INTERATIVA</h2>
+                    <p class="mt-4 text-gray-600">Arraste os termos (ou clique para selecionar) e solte sobre o número correto na imagem.</p>
+                </div>
+
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <!-- Game Area (Image) -->
+                    <div class="lg:col-span-2 relative bg-gray-100 rounded-xl overflow-hidden shadow-xl border-4 border-royal-purple" id="anatomy-container">
+                        <img src="./minijogo1.jpg" alt="Anatomia do Coração" class="w-full h-auto object-contain select-none">
+                        
+                        <!-- Drop Zones (Numbers/Locations) -->
+                        <div id="anatomy-game-area" class="absolute inset-0">
+                            <!-- JS will inject drop zones here -->
+                        </div>
+                    </div>
+
+                    <!-- Draggable Terms -->
+                    <div class="lg:col-span-1">
+                        <div class="bg-royal-purple/5 p-6 rounded-xl border border-royal-purple/20 h-full">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="font-bold text-xl text-royal-purple">Legenda</h3>
+                                <div class="flex space-x-2">
+                                    <button onclick="resetAnatomyGame()" class="text-sm bg-accent-gold text-classic-dark px-3 py-1 rounded hover:bg-yellow-500 font-bold"><i class="fa-solid fa-rotate"></i> Reset</button>
+                                </div>
+                            </div>
+                            <div id="anatomy-terms-container" class="space-y-3">
+                                <!-- JS will inject draggable items here -->
+                            </div>
+                            <div id="anatomy-feedback" class="mt-6 text-center font-bold min-h-[1.5rem]"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Section III: Glossário -->
         <section id="glossary" class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
@@ -380,6 +460,11 @@
                     <h3 class="font-bold text-royal-purple text-lg border-b pb-2"><i class="fa-solid fa-layer-group mr-2"></i> Flashcards</h3>
                     <p><strong>Modo Estudo:</strong> Clique nos cartões para os virar e ver a definição no verso.</p>
                     <p><strong>Jogo de Memória:</strong> Encontre os pares correspondentes (Termo + Definição). Selecione um cartão e tente encontrar o seu par.</p>
+                </div>
+
+                <div class="space-y-2">
+                    <h3 class="font-bold text-royal-purple text-lg border-b pb-2"><i class="fa-solid fa-heart mr-2"></i> Anatomia Interativa</h3>
+                    <p>Identifique as partes do coração. Arraste o termo da lista à direita e solte-o sobre a área numerada correspondente na imagem. Em telemóveis, toque no termo e depois toque na área numerada.</p>
                 </div>
 
                 <div class="space-y-2">
@@ -631,13 +716,27 @@
             }
         ];
 
+        // Anatomy Game Data - Updated Coordinates
+        const anatomyGameData = [
+            { id: 1, label: "Aurícula Esquerda", top: "23%", left: "87%" },
+            { id: 2, label: "Aurícula Direita", top: "23%", left: "9%" },
+            { id: 3, label: "Válvula Pulmonar", top: "40%", left: "10%" },
+            { id: 4, label: "Válvula Mitral", top: "40%", left: "89%" },
+            { id: 5, label: "Válvula Tricúspide", top: "56%", left: "10%" },
+            { id: 6, label: "Válvula Aórtica", top: "57%", left: "91%" },
+            { id: 7, label: "Ventrículo Direito", top: "85%", left: "24%" },
+            { id: 8, label: "Ventrículo Esquerdo", top: "85%", left: "87%" },
+            { id: 9, label: "Septo", top: "95%", left: "55%" }
+        ];
+
         // --- STATE VARIABLES ---
         let currentSlide = 1;
         const totalSlides = 15;
         let quizScore = 0;
         let answeredQuestions = new Set();
         let selectedMatchItem = null; // For Memory Game
-
+        let selectedAnatomyTerm = null; // For Anatomy Game (Mobile/Click)
+        
         // --- INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', () => {
             renderAccordion();
@@ -646,6 +745,7 @@
             renderGlossary();
             initGlossaryMiniGame();
             renderQuiz();
+            initAnatomyGame();
             
             // Search Listener
             document.getElementById('glossary-search').addEventListener('input', (e) => {
@@ -801,6 +901,130 @@
                     selectedMatchItem = null;
                 }
             }
+        }
+
+        // --- FUNCTIONS: ANATOMY GAME ---
+
+        function initAnatomyGame() {
+            const dropArea = document.getElementById('anatomy-game-area');
+            const termsArea = document.getElementById('anatomy-terms-container');
+            const feedback = document.getElementById('anatomy-feedback');
+            
+            feedback.innerText = "";
+            
+            // Create Drop Zones
+            dropArea.innerHTML = anatomyGameData.map(item => `
+                <div class="anatomy-dropzone absolute flex items-center justify-center font-bold text-royal-purple bg-white/50 border-dashed border-2 border-royal-purple cursor-pointer"
+                     style="top: ${item.top}; left: ${item.left}; width: 12%; height: 8%; transform: translate(-50%, -50%); border-radius: 8px;"
+                     data-id="${item.id}"
+                     ondragover="handleAnatomyDragOver(event)"
+                     ondrop="handleAnatomyDrop(event)"
+                     onclick="handleAnatomyZoneClick(this)">
+                     ${item.id}
+                </div>
+            `).join('');
+
+            // Create Draggable Items
+            const shuffledItems = [...anatomyGameData].sort(() => Math.random() - 0.5);
+            termsArea.innerHTML = shuffledItems.map(item => `
+                <div class="anatomy-draggable bg-white border border-gray-300 p-2 rounded shadow-sm text-sm font-medium hover:bg-gray-50 flex items-center justify-between"
+                     draggable="true"
+                     data-id="${item.id}"
+                     ondragstart="handleAnatomyDragStart(event)"
+                     onclick="handleAnatomyTermClick(this)">
+                     <span>${item.label}</span>
+                     <i class="fa-solid fa-grip-lines text-gray-300"></i>
+                </div>
+            `).join('');
+            
+            selectedAnatomyTerm = null;
+        }
+
+        function handleAnatomyDragStart(e) {
+            e.dataTransfer.setData("text/plain", e.target.getAttribute('data-id'));
+            e.dataTransfer.effectAllowed = "move";
+        }
+
+        function handleAnatomyDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = "move";
+            e.target.classList.add('hovered');
+        }
+
+        function handleAnatomyDrop(e) {
+            e.preventDefault();
+            e.target.classList.remove('hovered');
+            
+            const termId = e.dataTransfer.getData("text/plain");
+            const zoneId = e.target.getAttribute('data-id');
+            
+            checkAnatomyMatch(termId, zoneId, e.target);
+        }
+
+        // Mobile/Click Logic
+        function handleAnatomyTermClick(element) {
+            // Deselect previous
+            document.querySelectorAll('.anatomy-draggable').forEach(el => el.classList.remove('selected'));
+            
+            if (element.classList.contains('matched')) return;
+
+            selectedAnatomyTerm = element;
+            element.classList.add('selected');
+        }
+
+        function handleAnatomyZoneClick(zone) {
+            if (!selectedAnatomyTerm) return;
+            if (zone.classList.contains('correct')) return;
+
+            const termId = selectedAnatomyTerm.getAttribute('data-id');
+            const zoneId = zone.getAttribute('data-id');
+            
+            checkAnatomyMatch(termId, zoneId, zone);
+        }
+
+        function checkAnatomyMatch(termId, zoneId, zoneElement) {
+            const feedback = document.getElementById('anatomy-feedback');
+            
+            if (termId === zoneId) {
+                // Correct
+                const termElement = document.querySelector(`.anatomy-draggable[data-id="${termId}"]`);
+                const termLabel = anatomyGameData.find(i => i.id == termId).label;
+                
+                zoneElement.classList.add('correct');
+                zoneElement.innerText = termLabel; // Replace number with text
+                
+                if (termElement) {
+                    termElement.classList.add('matched');
+                    termElement.draggable = false;
+                }
+                
+                feedback.innerHTML = '<span class="text-green-600"><i class="fa-solid fa-check"></i> Correto!</span>';
+                
+                // Reset selection
+                if (selectedAnatomyTerm) {
+                    selectedAnatomyTerm.classList.remove('selected');
+                    selectedAnatomyTerm = null;
+                }
+
+                // Check win
+                const matchedCount = document.querySelectorAll('.anatomy-draggable.matched').length;
+                if (matchedCount === anatomyGameData.length) {
+                    feedback.innerHTML = '<span class="text-green-600 text-lg">Parabéns! Completou a anatomia.</span>';
+                }
+
+            } else {
+                // Incorrect
+                feedback.innerHTML = '<span class="text-red-600"><i class="fa-solid fa-xmark"></i> Tente novamente.</span>';
+                zoneElement.classList.add('bg-red-200');
+                setTimeout(() => {
+                    zoneElement.classList.remove('bg-red-200');
+                    feedback.innerText = "";
+                }, 1000);
+            }
+        }
+
+        function resetAnatomyGame() {
+            initAnatomyGame();
         }
 
         // --- FUNCTIONS: GLOSSARY ---
