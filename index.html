@@ -87,11 +87,12 @@
             transition: all 0.3s ease;
             border: 2px dashed rgba(94, 58, 140, 0.5);
             background: rgba(255, 255, 255, 0.4);
+            z-index: 20;
         }
         .anatomy-dropzone.hovered {
             background: rgba(212, 175, 55, 0.4); /* accent-gold */
             border-color: #d4af37;
-            transform: scale(1.1);
+            transform: translate(-50%, -50%) scale(1.1);
         }
         .anatomy-dropzone.correct {
             background: rgba(34, 197, 94, 0.8) !important; /* green-500 */
@@ -168,6 +169,17 @@
             0%    {opacity: 0; margin-top: -10px}
             100%  {opacity: 1; margin-top: 0px}
         }
+
+        /* Mobile Slide Visibility Fixes */
+        .slide-nav-btn {
+            z-index: 50;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            pointer-events: auto;
+        }
+        .slide-nav-btn:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
     </style>
 </head>
 <body class="font-sans antialiased min-h-screen flex flex-col">
@@ -224,7 +236,6 @@
         <!-- Intro Section -->
         <section id="intro" class="relative bg-classic-dark text-white py-20 px-4">
             <div class="absolute inset-0 overflow-hidden opacity-20">
-                <!-- Abstract background pattern -->
                 <img src="./cardiovascular.jpg" alt="Background" class="w-full h-full object-cover">
             </div>
             <div class="relative max-w-4xl mx-auto text-center">
@@ -260,7 +271,6 @@
 
             <!-- Accordion Summaries -->
             <div class="grid md:grid-cols-2 gap-8 mb-16" id="accordion-container">
-                <!-- Javascript will populate this based on PDF structure -->
             </div>
 
             <!-- Slideshow -->
@@ -270,19 +280,19 @@
                     <span id="slide-counter" class="bg-black/30 px-3 py-1 rounded-full text-sm">1 / 15</span>
                 </div>
                 
-                <div class="relative h-[400px] md:h-[500px] bg-black flex items-center justify-center group">
+                <div id="slideshow-container" class="relative h-[400px] md:h-[500px] bg-black flex items-center justify-center group overflow-hidden touch-pan-y">
                     <img id="current-slide" src="./slide1.jpg" onerror="this.src='https://picsum.photos/800/600?random=1'" alt="Slide Educativo" class="max-h-full max-w-full object-contain cursor-zoom-in transition duration-300" onclick="openModal()">
                     
-                    <!-- Navigation Buttons -->
-                    <button onclick="changeSlide(-1)" class="absolute left-4 bg-white/10 hover:bg-white/30 p-3 rounded-full backdrop-blur-sm transition text-white">
-                        <i class="fa-solid fa-chevron-left text-xl"></i>
+                    <!-- Navigation Buttons - Increased visibility and higher z-index for mobile -->
+                    <button onclick="changeSlide(-1)" class="slide-nav-btn absolute left-4 p-4 rounded-full backdrop-blur-md transition text-white">
+                        <i class="fa-solid fa-chevron-left text-2xl"></i>
                     </button>
-                    <button onclick="changeSlide(1)" class="absolute right-4 bg-white/10 hover:bg-white/30 p-3 rounded-full backdrop-blur-sm transition text-white">
-                        <i class="fa-solid fa-chevron-right text-xl"></i>
+                    <button onclick="changeSlide(1)" class="slide-nav-btn absolute right-4 p-4 rounded-full backdrop-blur-md transition text-white">
+                        <i class="fa-solid fa-chevron-right text-2xl"></i>
                     </button>
                 </div>
                 <div class="p-4 bg-gray-900 text-center text-sm text-gray-400">
-                    Clique na imagem para ampliar.
+                    <span class="md:hidden">Deslize para navegar ou </span>clique na imagem para ampliar.
                 </div>
             </div>
         </section>
@@ -303,7 +313,6 @@
 
                 <!-- Container: Flip Cards -->
                 <div id="flashcards-view" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- JS Generated Cards -->
                 </div>
 
                 <!-- Container: Matching Game -->
@@ -314,7 +323,6 @@
                             <button onclick="initMatchingGame('flashcard')" class="bg-accent-gold text-classic-dark px-4 py-1 rounded hover:bg-yellow-500 font-bold"><i class="fa-solid fa-rotate mr-1"></i> Reiniciar</button>
                         </div>
                         <div id="match-container-1" class="grid grid-cols-2 gap-4">
-                            <!-- JS Generated Items -->
                         </div>
                         <div id="match-feedback-1" class="mt-4 text-center font-bold text-lg h-8"></div>
                     </div>
@@ -322,7 +330,7 @@
             </div>
         </section>
 
-        <!-- Section V: Anatomia Interativa (New Section) -->
+        <!-- Section V: Anatomia Interativa -->
         <section id="anatomy" class="bg-white py-16 px-4 border-t border-gray-200">
             <div class="max-w-7xl mx-auto">
                 <div class="text-center mb-12">
@@ -337,7 +345,6 @@
                         
                         <!-- Drop Zones (Numbers/Locations) -->
                         <div id="anatomy-game-area" class="absolute inset-0">
-                            <!-- JS will inject drop zones here -->
                         </div>
                     </div>
 
@@ -351,7 +358,6 @@
                                 </div>
                             </div>
                             <div id="anatomy-terms-container" class="space-y-3">
-                                <!-- JS will inject draggable items here -->
                             </div>
                             <div id="anatomy-feedback" class="mt-6 text-center font-bold min-h-[1.5rem]"></div>
                         </div>
@@ -377,7 +383,6 @@
                         </div>
                     </div>
                     <div id="glossary-list" class="max-h-[600px] overflow-y-auto p-4 space-y-4 divide-y">
-                        <!-- JS Generated Glossary -->
                     </div>
                 </div>
 
@@ -392,7 +397,6 @@
                                 <p id="gg-definition" class="font-medium text-gray-800 italic">Carregando...</p>
                             </div>
                             <div id="gg-options" class="grid grid-cols-1 gap-2">
-                                <!-- Options -->
                             </div>
                             <div id="gg-feedback" class="text-center font-bold h-6"></div>
                         </div>
@@ -417,7 +421,6 @@
                     </div>
 
                     <div id="quiz-questions-container" class="p-6 space-y-8">
-                        <!-- JS Generated Questions -->
                     </div>
                 </div>
 
@@ -716,13 +719,13 @@
             }
         ];
 
-        // Anatomy Game Data - Updated Coordinates
+        // Anatomy Game Data - Updated Coordinates based on user requirements
         const anatomyGameData = [
             { id: 1, label: "Aurícula Esquerda", top: "23%", left: "87%" },
             { id: 2, label: "Aurícula Direita", top: "23%", left: "9%" },
-            { id: 3, label: "Válvula Pulmonar", top: "40%", left: "10%" },
+            { id: 3, label: "Válvula Pulmonar", top: "40%", left: "10%" }, // Corrected: Pulmonary = zone 3
             { id: 4, label: "Válvula Mitral", top: "40%", left: "89%" },
-            { id: 5, label: "Válvula Tricúspide", top: "56%", left: "10%" },
+            { id: 5, label: "Válvula Tricúspide", top: "56%", left: "10%" }, // Corrected: Tricuspid = zone 5
             { id: 6, label: "Válvula Aórtica", top: "57%", left: "91%" },
             { id: 7, label: "Ventrículo Direito", top: "85%", left: "24%" },
             { id: 8, label: "Ventrículo Esquerdo", top: "85%", left: "87%" },
@@ -734,8 +737,8 @@
         const totalSlides = 15;
         let quizScore = 0;
         let answeredQuestions = new Set();
-        let selectedMatchItem = null; // For Memory Game
-        let selectedAnatomyTerm = null; // For Anatomy Game (Mobile/Click)
+        let selectedMatchItem = null; 
+        let selectedAnatomyTerm = null;
         
         // --- INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', () => {
@@ -746,8 +749,8 @@
             initGlossaryMiniGame();
             renderQuiz();
             initAnatomyGame();
+            initSwipeNavigation();
             
-            // Search Listener
             document.getElementById('glossary-search').addEventListener('input', (e) => {
                 renderGlossary(e.target.value);
             });
@@ -780,10 +783,27 @@
             const img = document.getElementById('current-slide');
             const counter = document.getElementById('slide-counter');
             
-            // Note: In a real environment, verify file paths. 
-            // Using logic to switch between local paths as requested.
             img.src = `./slide${currentSlide}.jpg`;
             counter.innerText = `${currentSlide} / ${totalSlides}`;
+        }
+
+        function initSwipeNavigation() {
+            const container = document.getElementById('slideshow-container');
+            let startX = 0;
+            let endX = 0;
+
+            container.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+            }, { passive: true });
+
+            container.addEventListener('touchend', (e) => {
+                endX = e.changedTouches[0].clientX;
+                const diff = startX - endX;
+                if (Math.abs(diff) > 50) {
+                    if (diff > 0) changeSlide(1);
+                    else changeSlide(-1);
+                }
+            }, { passive: true });
         }
 
         // --- FUNCTIONS: FLASHCARDS & GAMES ---
@@ -793,7 +813,6 @@
             document.getElementById('matching-game-1').classList.add('hidden');
             document.getElementById(tabId).classList.remove('hidden');
             
-            // Style tabs
             const btnFlash = document.getElementById('tab-flash');
             const btnMatch = document.getElementById('tab-match');
             
@@ -815,12 +834,10 @@
             container.innerHTML = flashcardsData.map((card, index) => `
                 <div class="group h-48 w-full cursor-pointer perspective-1000" onclick="this.querySelector('.card-inner').classList.toggle('rotate-y-180')">
                     <div class="card-inner relative w-full h-full text-center transition-all duration-500 transform-style-3d shadow-xl rounded-xl">
-                        <!-- Front -->
                         <div class="absolute w-full h-full backface-hidden bg-white rounded-xl flex items-center justify-center p-4 border-2 border-royal-purple/10">
                             <h3 class="text-xl font-bold text-royal-purple">${card.term}</h3>
                             <i class="fa-solid fa-rotate absolute bottom-2 right-2 text-gray-300 text-sm"></i>
                         </div>
-                        <!-- Back -->
                         <div class="absolute w-full h-full backface-hidden rotate-y-180 bg-royal-purple text-white rounded-xl flex items-center justify-center p-4">
                             <p class="font-medium">${card.def}</p>
                         </div>
@@ -834,7 +851,6 @@
             const feedback = document.getElementById('match-feedback-1');
             feedback.innerText = "";
             
-            // Prepare Data: Take first 6 for simplicity
             let gameItems = [];
             const source = type === 'flashcard' ? flashcardsData.slice(0, 6) : glossaryData.slice(0, 6);
             
@@ -843,7 +859,6 @@
                 gameItems.push({ id: idx, type: 'def', text: item.def });
             });
             
-            // Shuffle
             gameItems.sort(() => Math.random() - 0.5);
             
             container.innerHTML = gameItems.map((item, index) => `
@@ -857,14 +872,12 @@
         }
 
         function handleMatchClick(element) {
-            if (element.classList.contains('bg-green-100')) return; // Already matched
+            if (element.classList.contains('bg-green-100')) return; 
             
             if (!selectedMatchItem) {
-                // First selection
                 selectedMatchItem = element;
                 element.classList.add('border-royal-purple', 'bg-royal-purple/10');
             } else {
-                // Second selection
                 const feedback = document.getElementById('match-feedback-1');
                 
                 if (element === selectedMatchItem) {
@@ -879,14 +892,12 @@
                 const type2 = element.getAttribute('data-type');
 
                 if (id1 === id2 && type1 !== type2) {
-                    // Match!
                     selectedMatchItem.classList.remove('border-royal-purple', 'bg-royal-purple/10');
                     selectedMatchItem.classList.add('bg-green-100', 'border-green-500', 'text-green-800', 'opacity-50');
                     element.classList.add('bg-green-100', 'border-green-500', 'text-green-800', 'opacity-50');
                     feedback.innerHTML = '<span class="text-green-600"><i class="fa-solid fa-check"></i> Correto!</span>';
                     selectedMatchItem = null;
                 } else {
-                    // Wrong
                     selectedMatchItem.classList.remove('border-royal-purple', 'bg-royal-purple/10');
                     selectedMatchItem.classList.add('bg-red-100', 'border-red-500');
                     element.classList.add('bg-red-100', 'border-red-500');
@@ -903,7 +914,7 @@
             }
         }
 
-        // --- FUNCTIONS: ANATOMY GAME ---
+        // --- FUNCTIONS: ANATOMIA GAME ---
 
         function initAnatomyGame() {
             const dropArea = document.getElementById('anatomy-game-area');
@@ -912,7 +923,6 @@
             
             feedback.innerText = "";
             
-            // Create Drop Zones
             dropArea.innerHTML = anatomyGameData.map(item => `
                 <div class="anatomy-dropzone absolute flex items-center justify-center font-bold text-royal-purple bg-white/50 border-dashed border-2 border-royal-purple cursor-pointer"
                      style="top: ${item.top}; left: ${item.left}; width: 12%; height: 8%; transform: translate(-50%, -50%); border-radius: 8px;"
@@ -924,7 +934,6 @@
                 </div>
             `).join('');
 
-            // Create Draggable Items
             const shuffledItems = [...anatomyGameData].sort(() => Math.random() - 0.5);
             termsArea.innerHTML = shuffledItems.map(item => `
                 <div class="anatomy-draggable bg-white border border-gray-300 p-2 rounded shadow-sm text-sm font-medium hover:bg-gray-50 flex items-center justify-between"
@@ -961,9 +970,7 @@
             checkAnatomyMatch(termId, zoneId, e.target);
         }
 
-        // Mobile/Click Logic
         function handleAnatomyTermClick(element) {
-            // Deselect previous
             document.querySelectorAll('.anatomy-draggable').forEach(el => el.classList.remove('selected'));
             
             if (element.classList.contains('matched')) return;
@@ -986,12 +993,11 @@
             const feedback = document.getElementById('anatomy-feedback');
             
             if (termId === zoneId) {
-                // Correct
                 const termElement = document.querySelector(`.anatomy-draggable[data-id="${termId}"]`);
                 const termLabel = anatomyGameData.find(i => i.id == termId).label;
                 
                 zoneElement.classList.add('correct');
-                zoneElement.innerText = termLabel; // Replace number with text
+                zoneElement.innerText = termLabel; 
                 
                 if (termElement) {
                     termElement.classList.add('matched');
@@ -1000,20 +1006,17 @@
                 
                 feedback.innerHTML = '<span class="text-green-600"><i class="fa-solid fa-check"></i> Correto!</span>';
                 
-                // Reset selection
                 if (selectedAnatomyTerm) {
                     selectedAnatomyTerm.classList.remove('selected');
                     selectedAnatomyTerm = null;
                 }
 
-                // Check win
                 const matchedCount = document.querySelectorAll('.anatomy-draggable.matched').length;
                 if (matchedCount === anatomyGameData.length) {
                     feedback.innerHTML = '<span class="text-green-600 text-lg">Parabéns! Completou a anatomia.</span>';
                 }
 
             } else {
-                // Incorrect
                 feedback.innerHTML = '<span class="text-red-600"><i class="fa-solid fa-xmark"></i> Tente novamente.</span>';
                 zoneElement.classList.add('bg-red-200');
                 setTimeout(() => {
@@ -1050,13 +1053,11 @@
         }
 
         function initGlossaryMiniGame() {
-            // Pick random term
             const targetIndex = Math.floor(Math.random() * glossaryData.length);
             const target = glossaryData[targetIndex];
             
             document.getElementById('gg-definition').innerText = target.def;
             
-            // Generate options (1 correct + 2 wrong)
             let options = [target];
             while (options.length < 3) {
                 let random = glossaryData[Math.floor(Math.random() * glossaryData.length)];
@@ -1159,7 +1160,6 @@
             if (isCorrect) {
                 feedbackEl.classList.add('bg-green-50', 'border-green-500', 'text-green-800');
                 feedbackEl.innerHTML = `<strong><i class="fa-solid fa-check"></i> Correto!</strong> ${q.feedback}`;
-                // Dynamic scoring: 100 / total questions
                 const pointsPerQuestion = 100 / quizData.length;
                 quizScore += pointsPerQuestion;
                 document.getElementById('quiz-score').innerText = `Pontos: ${Math.round(quizScore)}`;
@@ -1172,7 +1172,6 @@
             btn.classList.add('opacity-50', 'cursor-not-allowed');
             btn.disabled = true;
 
-            // Check if finished
             if (answeredQuestions.size === quizData.length) {
                 document.getElementById('certification-section').classList.remove('hidden');
                 document.getElementById('certification-section').scrollIntoView({behavior: "smooth"});
@@ -1192,7 +1191,6 @@
             document.getElementById('cert-date').innerText = date;
             document.getElementById('cert-score').innerText = Math.round(quizScore) + "%";
             
-            // Allow DOM update before printing
             setTimeout(() => {
                 window.print();
             }, 500);
